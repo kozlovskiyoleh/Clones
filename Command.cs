@@ -15,7 +15,7 @@ namespace Clones
         //TODO query must transform here in Command
         public Command(string query)
         {
-            TypeCommand = typeCommand;
+            TypeCommand = typeCommand
             Receiver = receiver;
             Program = program;
         }
