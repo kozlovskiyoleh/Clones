@@ -9,46 +9,47 @@ namespace Clones
     public class Clone
     {
         private string _currentProgram = string.Empty;
-        private Stack<string> _learnedPrograms = new();
-        private Stack<string> _rollBackPrograms = new();
+        private LinkedList<string> _learnedPrograms = new();
+        private LinkedList<string> _rollBackPrograms = new();
 
         public Clone()
         {
             _currentProgram = "basic";
-            _learnedPrograms.Push(_currentProgram);
+            _learnedPrograms.AddFirst(_currentProgram);
         }
 
-        public Clone(Stack<string> learnedPrograms, Stack<string> rollBackPrograms)
+        public Clone(LinkedList<string> learnedPrograms, LinkedList<string> rollBackPrograms)
         {
-            _currentProgram = learnedPrograms.Peek();
-            _learnedPrograms =  new Stack<string>(learnedPrograms.Reverse());
-            _rollBackPrograms = new Stack<string>(rollBackPrograms.Reverse());
+            _currentProgram = learnedPrograms.First.Value;
+            _learnedPrograms =  new LinkedList<string>(learnedPrograms.Reverse());
+            _rollBackPrograms = new LinkedList<string>(rollBackPrograms.Reverse());
         }
 
-        public Stack<string> GetLearnedPrograms() => _learnedPrograms;
+        public LinkedList<string> GetLearnedPrograms() => _learnedPrograms;
 
-        public Stack<string> GetRollBackPrograms() => _rollBackPrograms;
+        public LinkedList<string> GetRollBackPrograms() => _rollBackPrograms;
 
         public string Check() => _currentProgram;
 
         public void Learn(string program)
         {
             _currentProgram = program;
-            _learnedPrograms.Push(program);
+            _learnedPrograms.AddFirst(program);
         }
 
         public void RollBack()
         {
-            var rollBackProgram = _learnedPrograms.Pop();
-            _currentProgram = _learnedPrograms.Peek();
-            _rollBackPrograms.Push(rollBackProgram);
+            string programToRollback = _learnedPrograms.First.Value;
+            _rollBackPrograms.AddFirst(programToRollback);
+            _learnedPrograms.Remove(_currentProgram);
+            _currentProgram = _learnedPrograms.First.Value;
         }
 
         public void Relearn()
         {
-            var programToLearn = _rollBackPrograms.Pop();
-            _learnedPrograms.Push(programToLearn);
-            _currentProgram = _learnedPrograms.Peek();
+            _currentProgram = _rollBackPrograms.First.Value;
+            _learnedPrograms.AddFirst(_currentProgram);
+            _rollBackPrograms.Remove(_currentProgram);
         }
     }
 }
