@@ -5,13 +5,43 @@ namespace Clones;
 
 public class CloneVersionSystem : ICloneVersionSystem
 {
-	private List<Clone> _armyClones = new();
+	private Dictionary<int, Clone> _armyClones = new();
+	private const int _firstCloneID = 1;
+
+	public CloneVersionSystem()
+	{
+		_armyClones.Add(_firstCloneID, new Clone());
+	}
+
+	public void CreateNewClone(int key)
+	{
+		var clone = _armyClones[key];
+		int newClonesID = key + 1;
+		_armyClones.Add(newClonesID, new Clone(clone.GetLearnedPrograms(), clone.GetRollBackPrograms()));
+	}
 
 	public string Execute(string query)
 	{
-		string command = query.Split(' ')[0];
-		string receiver = query.Split(' ')[1];
-		string program = query.Split(' ')[2];
-
+		var request = new Request(query);
+		switch (request.Command)
+		{
+			case CommandTypes.Learn:
+                _armyClones[request.Receiver].Learn(request.Program);
+                break;
+			case CommandTypes.Relearn:
+				_armyClones[request.Receiver].Relearn();
+				break;
+			case CommandTypes.Rollback:
+				_armyClones[request.Receiver].RollBack();
+				break;
+			case CommandTypes.Check:
+				return _armyClones[request.Receiver].Check();
+			case CommandTypes.Clone:
+				CreateNewClone(request.Receiver);
+				break;
+			default:
+				return null;
+		}
+		return null;
 	}
 }

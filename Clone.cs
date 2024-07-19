@@ -8,19 +8,26 @@ namespace Clones
 {
     public class Clone
     {
-        public int ID { get;}
         private string _currentProgram = string.Empty;
         private Stack<string> _learnedPrograms = new();
         private Stack<string> _rollBackPrograms = new();
 
-        public Clone(int id = 1, string program = "basic")
+        public Clone()
         {
-            ID = id;
-            _currentProgram = program;
-            _learnedPrograms.Push(program);
+            _currentProgram = "basic";
+            _learnedPrograms.Push(_currentProgram);
         }
 
-        public Stack<string> GetLearnedPrograms() => _learnedPrograms; 
+        public Clone(Stack<string> learnedPrograms, Stack<string> rollBackPrograms)
+        {
+            _currentProgram = learnedPrograms.Peek();
+            _learnedPrograms =  new Stack<string>(learnedPrograms.Reverse());
+            _rollBackPrograms = new Stack<string>(rollBackPrograms.Reverse());
+        }
+
+        public Stack<string> GetLearnedPrograms() => _learnedPrograms;
+
+        public Stack<string> GetRollBackPrograms() => _rollBackPrograms;
 
         public string Check() => _currentProgram;
 
@@ -40,8 +47,8 @@ namespace Clones
         public void Relearn()
         {
             var programToLearn = _rollBackPrograms.Pop();
-            _currentProgram = _learnedPrograms.Peek();
             _learnedPrograms.Push(programToLearn);
+            _currentProgram = _learnedPrograms.Peek();
         }
     }
 }
