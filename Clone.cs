@@ -12,19 +12,20 @@ namespace Clones
         private LinkedList<string> _learnedPrograms = new();
         private LinkedList<string> _rollBackPrograms = new();
 
-        public Clone()
+        public Clone(string program = "basic")
         {
-            _currentProgram = "basic";
+            _currentProgram = program;
             _learnedPrograms.AddFirst(_currentProgram);
         }
 
         public Clone(LinkedList<string> learnedPrograms, LinkedList<string> rollBackPrograms)
         {
+            _learnedPrograms =  new LinkedList<string>(learnedPrograms);
+            _rollBackPrograms = new LinkedList<string>(rollBackPrograms);
             _currentProgram = learnedPrograms.First.Value;
-            _learnedPrograms =  new LinkedList<string>(learnedPrograms.Reverse());
-            _rollBackPrograms = new LinkedList<string>(rollBackPrograms.Reverse());
         }
 
+        //Must be refactoring(Removed). Should fields changed on properties with 2 selectors
         public LinkedList<string> GetLearnedPrograms() => _learnedPrograms;
 
         public LinkedList<string> GetRollBackPrograms() => _rollBackPrograms;

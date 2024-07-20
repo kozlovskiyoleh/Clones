@@ -89,4 +89,47 @@ public class CloneVersionSystem_should
 		}
 		return results;
 	}
+
+    [Test]
+    public void MassiveClone1()
+    {
+        var res = Execute("learn 1 1",
+        "clone 1",
+        "clone 1",
+        "clone 1",
+        "clone 1",
+        "clone 1",
+        "check 2",
+        "check 3",
+        "check 4",
+        "check 5",
+        "check 6");
+        Assert.AreEqual(new[] { "1", "1", "1", "1", "1" }, res);
+    }
+
+    [Test]
+    public void MassiveClone2()
+    {
+        var res = Execute("clone 1",
+        "clone 1",
+        "clone 1",
+        "clone 1",
+        "clone 1",
+        "check 1",
+        "check 2",
+        "check 3",
+        "check 4",
+        "check 5");
+        Assert.AreEqual(new[] { "basic", "basic", "basic", "basic", "basic" }, res);
+    }
+
+    [Test]
+    public void MassiveClone3()
+    {
+        var res = Execute("learn 1 37",
+        "learn 2 45",
+        "clone 1",
+        "check 3");
+        Assert.AreEqual(new[] { "37" }, res);
+    }
 }

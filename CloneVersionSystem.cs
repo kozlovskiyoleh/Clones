@@ -1,23 +1,25 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Clones;
 
 public class CloneVersionSystem : ICloneVersionSystem
 {
 	private Dictionary<int, Clone> _armyClones = new();
-	private const int _firstCloneID = 1;
+	private int _cuurentID = 0;
 
 	public CloneVersionSystem()
 	{
-		_armyClones.Add(_firstCloneID, new Clone());
+		_cuurentID = 1;
+		_armyClones.Add(_cuurentID, new Clone());
 	}
 
-	public void CreateNewClone(int key)
+	public void CreateNewClone()
 	{
-		var clone = _armyClones[key];
-		int newClonesID = key + 1;
-		_armyClones.Add(newClonesID, new Clone(clone.GetLearnedPrograms(), clone.GetRollBackPrograms()));
+		var clone = _armyClones[_cuurentID];
+		_cuurentID = _armyClones.Keys.Last() + 1;
+		_armyClones.Add(_cuurentID, new Clone(clone.GetLearnedPrograms(), clone.GetRollBackPrograms()));
 	}
 
 	public string Execute(string query)
@@ -26,7 +28,9 @@ public class CloneVersionSystem : ICloneVersionSystem
 		switch (request.Command)
 		{
 			case CommandTypes.Learn:
-                _armyClones[request.Receiver].Learn(request.Program);
+				if(!_armyClones.ContainsKey(request.Receiver))
+                    _armyClones.Add(request.Receiver, new Clone(request.Program));
+				_armyClones[request.Receiver].Learn(request.Program);
                 break;
 			case CommandTypes.Relearn:
 				_armyClones[request.Receiver].Relearn();
@@ -37,7 +41,7 @@ public class CloneVersionSystem : ICloneVersionSystem
 			case CommandTypes.Check:
 				return _armyClones[request.Receiver].Check();
 			case CommandTypes.Clone:
-				CreateNewClone(request.Receiver);
+				CreateNewClone();
 				break;
 			default:
 				return null;
