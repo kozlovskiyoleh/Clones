@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,60 +7,69 @@ using System.Threading.Tasks;
 
 namespace Clones
 {
-    public class LinkedListNode
+    public class Node<T>
     {
-        public int data;
-        public LinkedListNode next;
-        public LinkedListNode(int data)
-        {
-            this.data = data;
-            this.next = null;
-        }
+        public T data;
+        public Node<T> prev;
+        public Node<T> next;
     }
 
-    public class CustomStack
+    public class CustomStack<T>
     {
-        LinkedListNode top;
+        static Node<T> start = null;
+        static Node<T> top = null;
 
-        public CustomStack()
+        public bool IsEmpty()
         {
-            top = null;
+            if (start == null)
+            {
+                return true;
+            }
+            return false;
+        }
 
-        }
-        public LinkedListNode GetNode(int data)
+        public static T TopElement()
         {
-            LinkedListNode node = new LinkedListNode(data);
-            return node;
+            return top.data;
         }
-        public void Push(int data)
+        public void Pop()
         {
-            LinkedListNode newNode = GetNode(data);
-            if (top == null)
+            Node<T> n;
+            n = top;
+            if (IsEmpty())
+                Console.Write("Stack is empty");
+            else if (top == start)
             {
-                top = newNode;
-                return;
+                top = null;
+                start = null;
+                n = null;
             }
-            newNode.next = top;
-            top = newNode;
+            else
+            {
+                top.prev.next = null;
+                top = n.prev;
+                n = null;
+            }
+        }
 
-        }
-        public int Peek()
+        public void Push(T d)
         {
-            if (top != null)
+            Node<T> n = new Node<T>();
+            n.data = d;
+            if (IsEmpty())
             {
-                return top.data;
+                n.prev = null;
+                n.next = null;
+                start = n;
+                top = n;
             }
-            return -1;
-        }
-        public int Pop()
-        {
-            int peek = -1;
-            if (top != null)
+            else
             {
-                peek = top.data;
-                top = top.next;
+                top.next = n;
+                n.next = null;
+                n.prev = top;
+                top = n;
             }
-            return peek;
         }
     }
 }
