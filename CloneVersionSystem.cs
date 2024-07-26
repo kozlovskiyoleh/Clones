@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,7 +20,9 @@ public class CloneVersionSystem : ICloneVersionSystem
 	{
 		var clone = _armyClones[_cuurentID];
 		_cuurentID = _armyClones.Keys.Last() + 1;
-		_armyClones.Add(_cuurentID, new Clone(clone.GetLearnedPrograms(), clone.GetRollBackPrograms()));
+		var lastClonesLearnedPrograms = clone.GetLearnedPrograms();
+		var lastClonesRollbackPrograms = clone.GetRollBackPrograms();
+		_armyClones.Add(_cuurentID, new Clone(lastClonesLearnedPrograms.GetHead(), lastClonesRollbackPrograms.GetHead()));
 	}
 
 	public string Execute(string query)
@@ -29,7 +32,7 @@ public class CloneVersionSystem : ICloneVersionSystem
 		{
 			case CommandTypes.Learn:
 				if(!_armyClones.ContainsKey(request.Receiver))
-                    _armyClones.Add(request.Receiver, new Clone(request.Program));
+                    _armyClones.Add(request.Receiver, new Clone());
 				_armyClones[request.Receiver].Learn(request.Program);
                 break;
 			case CommandTypes.Relearn:

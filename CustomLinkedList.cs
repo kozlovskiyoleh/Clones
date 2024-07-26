@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NUnit.Framework.Interfaces;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,65 +11,57 @@ namespace Clones
     public class Node<T>
     {
         public T data;
-        public Node<T> prev;
         public Node<T> next;
+
+        public Node(T data = default(T), Node<T> next = null)
+        {
+            this.data = data;
+            this.next = next;
+        }
     }
 
     public class CustomStack<T>
     {
-        static Node<T> start = null;
-        static Node<T> top = null;
+        public Node<T> head;
 
-        public bool IsEmpty()
+        public CustomStack(Node<T> head = null)
         {
-            if (start == null)
-            {
-                return true;
-            }
-            return false;
+            this.head = head;
         }
 
-        public static T TopElement()
+        public Node<T> GetHead() => head;
+
+        public void AddToEnd(T item)
         {
-            return top.data;
-        }
-        public void Pop()
-        {
-            Node<T> n;
-            n = top;
-            if (IsEmpty())
-                Console.Write("Stack is empty");
-            else if (top == start)
+            if (head == null)
             {
-                top = null;
-                start = null;
-                n = null;
+                head = new Node<T>(item);
             }
             else
             {
-                top.prev.next = null;
-                top = n.prev;
-                n = null;
+                Node<T> current = head;
+                while (current.next != null)
+                {
+                    current = current.next;
+                }
+                current.next = new Node<T>(item);
             }
         }
 
-        public void Push(T d)
+        public void Pop() => head = head.next;
+
+        public T Peek() => head.data;
+
+        public void Push(T item)
         {
-            Node<T> n = new Node<T>();
-            n.data = d;
-            if (IsEmpty())
+            if (head == null)
             {
-                n.prev = null;
-                n.next = null;
-                start = n;
-                top = n;
+                head = new Node<T>(item);
             }
             else
             {
-                top.next = n;
-                n.next = null;
-                n.prev = top;
-                top = n;
+                Node<T> current = new Node<T>(item, head);
+                head = current;
             }
         }
     }
