@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace Clones;
 
+/*Refactoring Execute using CommandPattern*/
 public class CloneVersionSystem : ICloneVersionSystem
 {
 	private Dictionary<int, Clone> _armyClones = new();
@@ -35,16 +36,16 @@ public class CloneVersionSystem : ICloneVersionSystem
                     _armyClones.Add(request.Receiver, new Clone());
 				_armyClones[request.Receiver].Learn(request.Program);
                 break;
-			case CommandTypes.Relearn:
+			case CommandTypes.Relearn:		//Done
 				_armyClones[request.Receiver].Relearn();
 				break;
-			case CommandTypes.Rollback:
+			case CommandTypes.Rollback:		//Done
 				_armyClones[request.Receiver].RollBack();
 				break;
-			case CommandTypes.Check:
+			case CommandTypes.Check:		//Done
 				return _armyClones[request.Receiver].Check();
 			case CommandTypes.Clone:
-				CreateNewClone();
+				CreateNewClone();			//Done
 				break;
 			default:
 				return null;

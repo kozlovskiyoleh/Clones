@@ -25,8 +25,6 @@ namespace Clones
             _currentProgram = _learnedPrograms.Peek();
         }
 
-
-        //Must be refactoring(Removed). Should fields changed on properties with 2 selectors
         public CustomStack<string> GetLearnedPrograms() => _learnedPrograms;
 
         public CustomStack<string> GetRollBackPrograms() => _rollBackPrograms;
