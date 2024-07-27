@@ -1,11 +1,11 @@
 ﻿using NUnit.Framework;
 using NUnit.Framework.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Clones;
 
-/*Refactoring Execute using CommandPattern*/
 public class CloneVersionSystem : ICloneVersionSystem
 {
 	private Dictionary<int, Clone> _armyClones = new();
@@ -29,27 +29,26 @@ public class CloneVersionSystem : ICloneVersionSystem
 	public string Execute(string query)
 	{
 		var request = new Request(query);
-		switch (request.Command)
-		{
-			case CommandTypes.Learn:
-				if(!_armyClones.ContainsKey(request.Receiver))
-                    _armyClones.Add(request.Receiver, new Clone());
-				_armyClones[request.Receiver].Learn(request.Program);
-                break;
-			case CommandTypes.Relearn:		//Done
-				_armyClones[request.Receiver].Relearn();
-				break;
-			case CommandTypes.Rollback:		//Done
-				_armyClones[request.Receiver].RollBack();
-				break;
-			case CommandTypes.Check:		//Done
-				return _armyClones[request.Receiver].Check();
-			case CommandTypes.Clone:
-				CreateNewClone();			//Done
-				break;
-			default:
-				return null;
-		}
-		return null;
+		var command = CreateCommand(request);
+		return command.Execute();
 	}
+
+    public ICommand CreateCommand(Request request)
+    {
+        switch (request.Command)
+        {
+            case CommandTypes.Learn:
+                return new LearnCommand(_armyClones, request);
+            case CommandTypes.Relearn:
+                return new RelearnCommand(_armyClones[request.Receiver]);
+            case CommandTypes.Rollback:
+                return new RollBackCommand(_armyClones[request.Receiver]);
+            case CommandTypes.Check:
+                return new CheckCommand(_armyClones[request.Receiver]);
+            case CommandTypes.Clone:
+                return new CloneCommand(this);
+            default:
+                throw new InvalidOperationException();
+        }
+    }
 }
